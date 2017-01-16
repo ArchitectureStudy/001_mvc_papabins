@@ -12,12 +12,12 @@ import Foundation
 class IssuesViewController: UIViewController {
 
     @IBOutlet weak var tableview: UITableView!
-    var presenter: IssuesPresenter = IssuesPresenter(delegate: self as! IssuesPresensterProtocol)
+    var presenter: IssuesPresenter!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.presenter = IssuesPresenter(delegate: self)
+        self.presenter = IssuesPresenter(delegate: self)
         
         self.presenter.loadIssues()
     }

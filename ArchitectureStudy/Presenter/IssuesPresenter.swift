@@ -6,13 +6,11 @@
 //  Copyright © 2017년 papabins. All rights reserved.
 //
 
-import UIKit
 import Foundation
 
 protocol IssuesPresensterProtocol {
     
     func didFinishLoadIssues()
-//    func error(_ message: String)
 }
 
 class IssuesPresenter {

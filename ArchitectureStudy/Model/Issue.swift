@@ -23,11 +23,8 @@ class Issue: Mappable {
     var state: State = .closed
     
     private var stateStr: String? {
-        get {
-            return self.stateStr
-        }
-        set {
-            if newValue == "open" {
+        didSet {
+            if stateStr == "open" {
                 self.state = .open
             }
             else {
@@ -46,6 +43,8 @@ class Issue: Mappable {
         stateStr <- map["state"]
     }
 }
+
+
 
 /*
 {
