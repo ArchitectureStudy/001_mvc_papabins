@@ -10,12 +10,31 @@ import Foundation
 import ObjectMapper
 import AlamofireObjectMapper
 
+enum State: String {
+    case open
+    case closed
+}
+
 class Issue: Mappable {
     
     var id: Double = 0
     var number: Double = 0
     var title: String? = ""
-    var state: String? = ""
+    var state: State = .closed
+    
+    private var stateStr: String? {
+        get {
+            return self.stateStr
+        }
+        set {
+            if newValue == "open" {
+                self.state = .open
+            }
+            else {
+                self.state = .closed
+            }
+        }
+    }
     
     required init?(map: Map) {
     }
@@ -24,7 +43,7 @@ class Issue: Mappable {
         id <- map["id"]
         number <- map["number"]
         title <- map["title"]
-        state <- map["state"]
+        stateStr <- map["state"]
     }
 }
 

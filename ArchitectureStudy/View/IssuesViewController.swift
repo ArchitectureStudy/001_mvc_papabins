@@ -12,25 +12,25 @@ import Foundation
 class IssuesViewController: UIViewController {
 
     @IBOutlet weak var tableview: UITableView!
-    
-    var dataSource: Issues = Issues()
+    var presenter: IssuesPresenter = IssuesPresenter(delegate: self as! IssuesPresensterProtocol)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(updateIssues),
-                                               name: Issues.notificationOfNewIssues,
-                                               object: nil)
-        dataSource.loadIssues()
+//        self.presenter = IssuesPresenter(delegate: self)
+        
+        self.presenter.loadIssues()
     }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func updateIssues() {
+}
+
+extension IssuesViewController: IssuesPresensterProtocol {
+    func didFinishLoadIssues() {
         tableview.reloadData()
     }
 }
@@ -38,18 +38,18 @@ class IssuesViewController: UIViewController {
 extension IssuesViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource.issues.count
+        return presenter.dataSource.issues.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: IssueCell = (tableView.dequeueReusableCell(withIdentifier: "IssueCell", for: indexPath) as? IssueCell)!
         
-        let issue = dataSource.issues[indexPath.row]
+        let issue = presenter.dataSource.issues[indexPath.row]
         cell.titleLabel.text = issue.title
-        if issue.state == "open" {
-            cell.stateImageButton.isSelected = false
-        }
-        else if issue.state == "closed" {
+        switch issue.state {
+        case .open:
+                cell.stateImageButton.isSelected = false
+        case .closed:
             cell.stateImageButton.isSelected = true
         }
         return cell
