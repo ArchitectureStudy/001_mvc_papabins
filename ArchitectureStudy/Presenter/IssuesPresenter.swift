@@ -16,12 +16,12 @@ protocol IssuesPresensterProtocol {
 class IssuesPresenter {
     
     private var delegate: IssuesPresensterProtocol?
-    var dataSource: Issues = Issues()
+    var dataSource: Issues
     
     required init(delegate: IssuesPresensterProtocol) {
         
         self.delegate = delegate
-        
+        self.dataSource = Issues(user: "ArchitectureStudy", repo: "study")
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updatedIssues),
                                                name: Issues.notificationOfNewIssues,

@@ -14,10 +14,17 @@ import Alamofire
 class Issues {
     static let notificationOfNewIssues = NSNotification.Name(rawValue: "NewIssues")
     
+    var user: String
+    var repo: String
     var issues = [Issue]()
     
+    required init(user: String, repo: String) {
+        self.user = user
+        self.repo = repo
+    }
+    
     func loadIssues() {
-        let endpoint: String = "https://api.github.com/repos/Alamofire/Alamofire/issues?state=all&page=1&per_page=100&sort=updated"
+        let endpoint: String = "https://api.github.com/repos/\(user)/\(repo)/issues?state=all&page=1&per_page=100&sort=updated"
         Alamofire.request(endpoint).responseJSON { response in
             
                 switch response.result {
