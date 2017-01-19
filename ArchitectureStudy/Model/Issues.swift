@@ -12,7 +12,6 @@ import AlamofireObjectMapper
 import Alamofire
 
 class Issues {
-    static let notificationOfNewIssues = NSNotification.Name(rawValue: "NewIssues")
     
     var user: String
     var repo: String
@@ -31,7 +30,7 @@ class Issues {
                 case .success:
                     if let json = response.result.value as? [[String: Any]] {
                         self.issues = Mapper<Issue>().mapArray(JSONArray: json)!
-                        NotificationCenter.default.post(name: Issues.notificationOfNewIssues, object: nil)
+                        NotificationCenter.default.post(name: .newIssues, object: nil)
                     }
                 case .failure(let error):
                     print("----- error: \(error)")
