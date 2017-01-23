@@ -12,23 +12,28 @@ import AlamofireObjectMapper
 import Alamofire
 
 class Issues {
-    static let notificationOfNewIssues = NSNotification.Name(rawValue: "NewIssues")
     
+    var user: String
+    var repo: String
     var issues = [Issue]()
     
+    required init(user: String, repo: String) {
+        self.user = user
+        self.repo = repo
+    }
+    
     func loadIssues() {
-        let endpoint: String = "https://api.github.com/repos/Alamofire/Alamofire/issues?state=all&page=1&per_page=100&sort=updated"
+        let endpoint: Endpoint = .getIssues(user: user, repo: repo)
         Alamofire.request(endpoint).responseJSON { response in
-            
-                switch response.result {
-                case .success:
-                    if let json = response.result.value as? [[String: Any]] {
-                        self.issues = Mapper<Issue>().mapArray(JSONArray: json)!
-                        NotificationCenter.default.post(name: Issues.notificationOfNewIssues, object: nil)
-                    }
-                case .failure(let error):
-                    print("----- error: \(error)")
+            switch response.result {
+            case .success:
+                if let json = response.result.value as? [[String: Any]] {
+                    self.issues = Mapper<Issue>().mapArray(JSONArray: json)!
+                    NotificationCenter.default.post(name: .newIssues, object: nil)
                 }
+            case .failure(let error):
+                print("----- error: \(error)")
+            }
         }
     }
 }

@@ -12,6 +12,9 @@ class IssueCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var stateImageButton: UIButton!
+    @IBOutlet weak var commentsImageView: UIImageView!
+    @IBOutlet weak var commentsLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

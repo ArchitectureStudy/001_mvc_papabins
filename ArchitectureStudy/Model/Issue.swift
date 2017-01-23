@@ -10,23 +10,80 @@ import Foundation
 import ObjectMapper
 import AlamofireObjectMapper
 
+enum State: String {
+    case open
+    case closed
+}
+
 class Issue: Mappable {
     
-    var id: Double = 0
-    var number: Double = 0
-    var title: String? = ""
-    var state: String? = ""
+    var number: Int = 0
+    var title: String = ""
+    var state: State = .closed
+    var comments: Int = 0
+    var body: String = ""
+    
+    var user: User = User()
+    
+    private var stateStr: String? {
+        didSet {
+            if stateStr == "open" {
+                self.state = .open
+            }
+            else {
+                self.state = .closed
+            }
+        }
+    }
     
     required init?(map: Map) {
     }
     
     func mapping(map: Map) {
-        id <- map["id"]
         number <- map["number"]
         title <- map["title"]
-        state <- map["state"]
+        stateStr <- map["state"]
+        comments <- map["comments"]
+        user <- map["user"]
+        body <- map["body"]
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 {
