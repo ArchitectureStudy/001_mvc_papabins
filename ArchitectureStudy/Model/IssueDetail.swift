@@ -47,6 +47,7 @@ class IssueDetail {
             switch response.result {
             case .success:
                 if let json = response.result.value as? [[String: Any]] {
+                    self.comments.removeAll()
                     self.comments = Mapper<Comment>().mapArray(JSONArray: json)!
                     NotificationCenter.default.post(name: .newComments, object: nil)
                 }
@@ -59,13 +60,19 @@ class IssueDetail {
     func createComment(comment: String) {
         let endpoint: Endpoint = .createComment(user: user, repo: repo, number: num, body: comment)
         Alamofire.request(endpoint).responseJSON { response in
+            
+            var result:[String: Any] = ["isSuccess": "OK"]
             switch response.result {
             case .success:
-                NotificationCenter.default.post(name: .createComment, object: ["isSuccess": true])
+                if let json = response.result.value as? [String: Any] {
+                    let responseComment: Comment = Mapper<Comment>().map(JSON: json)!
+                    result = ["isSuccess": "OK", "comment": responseComment]
+                }
             case .failure(let error):
-                NotificationCenter.default.post(name: .createComment, object: ["isSuccess": false])
+                result = ["isSuccess": "Fail"]
                 print("----- error: \(error)")
             }
+            NotificationCenter.default.post(name: .createComment, object: nil, userInfo: result)
         }
     }
 }

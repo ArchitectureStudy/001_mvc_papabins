@@ -61,11 +61,11 @@ enum Endpoint: URLRequestConvertible {
              .getComments:
             urlRequest = try URLEncoding.default.encode(urlRequest, with: params)
         case .createComment(_, _, _, let bodyString):
-            urlRequest = try URLEncoding.default.encode(urlRequest, with: ["body": bodyString])
+            urlRequest = try JSONEncoding.default.encode(urlRequest, with: ["body": bodyString])
             break
         }
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.setValue("token 5eba39644bc977461c518e81de21e98d9a54f100", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("token c5e4ec18f50bc3ff8dfe5fa61959969e92ff277f", forHTTPHeaderField: "Authorization")
         
         return urlRequest
     }

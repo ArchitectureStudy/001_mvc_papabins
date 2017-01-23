@@ -51,6 +51,40 @@ class Issue: Mappable {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 {
     "url": "https://api.github.com/repos/Alamofire/Alamofire/issues/1897",

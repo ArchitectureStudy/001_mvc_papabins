@@ -58,6 +58,7 @@ extension IssuesViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell: IssueCell = (tableView.dequeueReusableCell(withIdentifier: "IssueCell", for: indexPath) as? IssueCell)!
         
         let issue = presenter.dataSource.issues[indexPath.row]
@@ -83,8 +84,6 @@ extension IssuesViewController: UITableViewDataSource {
 
 extension IssuesViewController: UITableViewDelegate {
 //    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let issue = presenter.dataSource.issues[indexPath.row]
-//        self.performSegue(withIdentifier: "ShowIssueDetail", sender:  issue)
 //    }
 }
 

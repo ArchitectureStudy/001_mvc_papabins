@@ -32,7 +32,7 @@ class IssueDetailPresenter {
                                                name: .newComments,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(createdComment),
+                                               selector: #selector(createdComment(_ :)),
                                                name: .createComment,
                                                object: nil)
     }
@@ -61,9 +61,14 @@ class IssueDetailPresenter {
         self.delegate?.didFinishLoadComments()
     }
     
-    @objc func createdComment(_ notification: Notification) {
-        guard let isSuccess: Bool = notification.userInfo!["isSuccess"] as! Bool? else { return }
-        self.delegate?.didCreatedComment(isSuccess: isSuccess)
+    @objc func createdComment(_ notification: NSNotification) {
+        if let result = notification.userInfo?["isSuccess"] as? String {
+            let isSuccess: Bool = result == "OK" ? true : false
+            self.delegate?.didCreatedComment(isSuccess: isSuccess)
+        }
+        else {
+            self.delegate?.didCreatedComment(isSuccess: false)
+        }
     }
     
 }

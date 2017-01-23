@@ -17,6 +17,7 @@ class IssueDetailViewController: UIViewController {
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var commentInputTextField: UITextField!
+    @IBOutlet weak var inputViewBottomLayoutConstraint: NSLayoutConstraint!
     
     var issueNumber: String!
     var presenter: IssueDetailPresenter!
@@ -34,7 +35,8 @@ class IssueDetailViewController: UIViewController {
     func initialize() {
         
         self.title = "#\(issueNumber!)"
-        sendButton.layer.cornerRadius = 10.0
+        sendButton.layer.cornerRadius = 5.0
+        NotificationCenter.default.addObserver(self, selector: #selector(onChangedKeyboard(_:)), name: Notification.Name.UIKeyboardWillChangeFrame, object: nil)
         
         self.presenter = IssueDetailPresenter(delegate: self, number: issueNumber)
         self.presenter.loadIssue()
@@ -42,16 +44,32 @@ class IssueDetailViewController: UIViewController {
     }
     
     @IBAction func createCommentButtonAction(_ sender: Any) {
-        guard commentInputTextField.text?.characters.count == 0 else {
+        guard let comment = commentInputTextField.text else {
             return
         }
-        self.presenter.createComments(comment: commentInputTextField.text!);
+        if comment.characters.count > 1 {
+            self.presenter.createComments(comment: commentInputTextField.text!);
+        }
+    }
+    
+    @objc func onChangedKeyboard(_ notification: Notification) {
+        guard let userInfo = notification.userInfo else { return }
+        let keyboardInfo = userInfo.keyboardInfo()
+        let hidden = keyboardInfo.endFrame.origin.y >= UIScreen.main.bounds.size.height
+        
+        UIView.animate(withDuration: keyboardInfo.duration, delay: 0, options: keyboardInfo.animationOptions, animations: {
+            self.inputViewBottomLayoutConstraint.constant = hidden ? 0 : keyboardInfo.endFrame.size.height
+        }, completion: nil)
+    }
+    
+    @IBAction func backgroundTapGestureAction(_ sender: Any) {
+        self.commentInputTextField.resignFirstResponder()
     }
     
 }
 
 extension IssueDetailViewController: IssueDetailPresenterDelegate {
-    internal func didFinishLoadIssue() {
+    func didFinishLoadIssue() {
         collectionView.reloadData()
     }
     
@@ -62,6 +80,8 @@ extension IssueDetailViewController: IssueDetailPresenterDelegate {
     func didCreatedComment(isSuccess: Bool) {
         if isSuccess {
             self.presenter.loadComments()
+            self.commentInputTextField.text = ""
+            self.commentInputTextField.resignFirstResponder()
         }
     }
 }
@@ -128,8 +148,8 @@ extension IssueDetailViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: UICollectionViewDelegate
 extension IssueDetailViewController: UICollectionViewDelegate {
-    // MARK: UICollectionViewDelegate
     
     /*
      // Uncomment this method to specify if the specified item should be highlighted during tracking
