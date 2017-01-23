@@ -28,15 +28,18 @@ class IssuesViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        switch segue.destination {
-        case let viewController as IssueDetailViewController:
-            guard let issue = sender as? Issue else {
-                return
-            }
-            viewController.title = "#\(issue.number)"
+        
+        guard let identifier = segue.identifier else {
+            return
+        }
+        
+        if identifier == "ShowIssueDetail",
+            let viewController = segue.destination as? IssueDetailViewController,
+            let cell = sender as? UITableViewCell,
+            let indexPath = tableview.indexPath(for: cell) {
             
-            
-        default: break
+            let issue = presenter.dataSource.issues[indexPath.row]
+            viewController.issueNumber = "\(issue.number)"
         }
         
     }
@@ -79,9 +82,9 @@ extension IssuesViewController: UITableViewDataSource {
 }
 
 extension IssuesViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let issue = presenter.dataSource.issues[indexPath.row]
-        self.performSegue(withIdentifier: "Show", sender:  issue)
-    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let issue = presenter.dataSource.issues[indexPath.row]
+//        self.performSegue(withIdentifier: "ShowIssueDetail", sender:  issue)
+//    }
 }
 

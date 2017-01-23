@@ -14,23 +14,33 @@ enum Endpoint: URLRequestConvertible {
     static let baseURLString = "https://api.github.com"
     static let perPage = 50
     
+    case getIssue(user: String, repo: String, number: String)
     case getIssues(user: String, repo: String)
     case getComments(user: String, repo: String, number: String)
+    case createComment(user: String, repo: String, number: String, body: String)
     
     var method: HTTPMethod {
         switch self {
+        case .getIssue:
+            return .get
         case .getIssues:
             return .get
         case .getComments:
             return .get
+        case .createComment:
+            return .post
         }
     }
     
     var path: String {
         switch self {
+        case .getIssue(let user, let repo, let number):
+            return "/repos/\(user)/\(repo)/issues/\(number)"
         case .getIssues(let user, let repo):
             return "/repos/\(user)/\(repo)/issues"
         case .getComments(let user, let repo, let number):
+            return "/repos/\(user)/\(repo)/issues/\(number)/comments"
+        case .createComment(let user, let repo, let number, _):
             return "/repos/\(user)/\(repo)/issues/\(number)/comments"
         }
     }
@@ -38,7 +48,7 @@ enum Endpoint: URLRequestConvertible {
     func asURLRequest() throws -> URLRequest {
         let url = try Endpoint.baseURLString.asURL()
         
-        let parameters: [String: Any] = ["state": "all",
+        let params: [String: Any] = ["state": "all",
                                          "page": "1",
                                          "per_page": Endpoint.perPage,
                                          "sort": "updated"]
@@ -46,13 +56,16 @@ enum Endpoint: URLRequestConvertible {
         urlRequest.httpMethod = method.rawValue
         
         switch self {
-        case .getIssues,
+        case .getIssue,
+             .getIssues,
              .getComments:
-            urlRequest = try URLEncoding.default.encode(urlRequest, with: parameters)
+            urlRequest = try URLEncoding.default.encode(urlRequest, with: params)
+        case .createComment(_, _, _, let bodyString):
+            urlRequest = try URLEncoding.default.encode(urlRequest, with: ["body": bodyString])
             break
         }
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.setValue("token 6d846b7883c2b3ce96412bf2c77991989074aaee", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("token 5eba39644bc977461c518e81de21e98d9a54f100", forHTTPHeaderField: "Authorization")
         
         return urlRequest
     }

@@ -12,7 +12,7 @@ import AlamofireObjectMapper
 class User: Mappable {
     var id: Double = 0
     var login: String? = ""
-    var avatarUrl: String? = ""
+    var avatarUrl: String? = nil
     var url: String? = ""
     
     init() {}

@@ -12,8 +12,8 @@ import AlamofireObjectMapper
 class Comment: Mappable {
     var id: Double = 0
     var url: String? = ""
-    var createdAt: Date?
-    var body: String?
+    var createdAt: String? = ""
+    var body: String? = ""
     
     var user: User = User()
     
@@ -24,8 +24,9 @@ class Comment: Mappable {
     func mapping(map: Map) {
         id <- map["id"]
         url <- map["url"]
-        createdAt <- (map["created_at"], DateTransform())
+        createdAt <- map["created_at"]
         body <- map["body"]
+        user <- map["user"]
     }
 }
 

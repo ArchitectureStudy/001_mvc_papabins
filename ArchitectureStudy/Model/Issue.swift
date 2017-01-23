@@ -17,10 +17,11 @@ enum State: String {
 
 class Issue: Mappable {
     
-    var number: Double = 0
+    var number: Int = 0
     var title: String = ""
     var state: State = .closed
     var comments: Int = 0
+    var body: String = ""
     
     var user: User = User()
     
@@ -44,6 +45,7 @@ class Issue: Mappable {
         stateStr <- map["state"]
         comments <- map["comments"]
         user <- map["user"]
+        body <- map["body"]
     }
 }
 

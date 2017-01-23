@@ -9,6 +9,9 @@
 import Foundation
 
 extension Notification.Name {
-    static let newIssues = Notification.Name("NewIssues")
-    static let getComments = Notification.Name("GetComments")
+    
+    static let newIssue = Notification.Name("newIssue")
+    static let newIssues = Notification.Name("newIssues")
+    static let newComments = Notification.Name("newComments")
+    static let createComment = Notification.Name("createComment")
 }
