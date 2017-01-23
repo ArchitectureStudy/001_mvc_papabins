@@ -24,8 +24,12 @@ class IssuesPresenter {
         self.dataSource = Issues(user: "ArchitectureStudy", repo: "study")
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updatedIssues),
-                                               name: Issues.notificationOfNewIssues,
+                                               name: .newIssues,
                                                object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     public func loadIssues() {

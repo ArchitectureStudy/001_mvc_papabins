@@ -22,10 +22,23 @@ class IssuesViewController: UIViewController {
         self.presenter.loadIssues()
     }
     
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.destination {
+        case let viewController as IssueDetailViewController:
+            guard let issue = sender as? Issue else {
+                return
+            }
+            viewController.title = "#\(issue.number)"
+            
+            
+        default: break
+        }
+        
     }
 }
 
@@ -52,6 +65,23 @@ extension IssuesViewController: UITableViewDataSource {
         case .closed:
             cell.stateImageButton.isSelected = true
         }
+        if issue.comments > 0 {
+            cell.commentsImageView.isHidden = false
+            cell.commentsLabel.isHidden = false
+            cell.commentsLabel.text = String(issue.comments)
+        }
+        else {
+            cell.commentsImageView.isHidden = true
+            cell.commentsLabel.isHidden = true
+        }
         return cell
     }
 }
+
+extension IssuesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let issue = presenter.dataSource.issues[indexPath.row]
+        self.performSegue(withIdentifier: "Show", sender:  issue)
+    }
+}
+

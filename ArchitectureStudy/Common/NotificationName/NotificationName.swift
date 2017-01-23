@@ -10,4 +10,5 @@ import Foundation
 
 extension Notification.Name {
     static let newIssues = Notification.Name("NewIssues")
+    static let getComments = Notification.Name("GetComments")
 }

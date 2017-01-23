@@ -17,10 +17,12 @@ enum State: String {
 
 class Issue: Mappable {
     
-    var id: Double = 0
     var number: Double = 0
-    var title: String? = ""
+    var title: String = ""
     var state: State = .closed
+    var comments: Int = 0
+    
+    var user: User = User()
     
     private var stateStr: String? {
         didSet {
@@ -37,10 +39,11 @@ class Issue: Mappable {
     }
     
     func mapping(map: Map) {
-        id <- map["id"]
         number <- map["number"]
         title <- map["title"]
         stateStr <- map["state"]
+        comments <- map["comments"]
+        user <- map["user"]
     }
 }
 

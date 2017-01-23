@@ -12,15 +12,16 @@ import Alamofire
 enum Endpoint: URLRequestConvertible {
     
     static let baseURLString = "https://api.github.com"
+    static let perPage = 50
     
     case getIssues(user: String, repo: String)
-    case getDetailIssue(user: String, repo: String, number: Double)
+    case getComments(user: String, repo: String, number: String)
     
     var method: HTTPMethod {
         switch self {
         case .getIssues:
             return .get
-        case .getDetailIssue:
+        case .getComments:
             return .get
         }
     }
@@ -29,25 +30,29 @@ enum Endpoint: URLRequestConvertible {
         switch self {
         case .getIssues(let user, let repo):
             return "/repos/\(user)/\(repo)/issues"
-        case .getDetailIssue(let user, let repo, let number):
-            return "/repos/\(user)/\(repo)/issues/\(number)"
+        case .getComments(let user, let repo, let number):
+            return "/repos/\(user)/\(repo)/issues/\(number)/comments"
         }
     }
     
     func asURLRequest() throws -> URLRequest {
         let url = try Endpoint.baseURLString.asURL()
         
-        var parameters: [String: Any]?
+        let parameters: [String: Any] = ["state": "all",
+                                         "page": "1",
+                                         "per_page": Endpoint.perPage,
+                                         "sort": "updated"]
         var urlRequest = URLRequest(url: url.appendingPathComponent(path))
         urlRequest.httpMethod = method.rawValue
         
         switch self {
         case .getIssues,
-             .getDetailIssue:
-            urlRequest = try URLEncoding.default.encode(urlRequest, with: nil)
+             .getComments:
+            urlRequest = try URLEncoding.default.encode(urlRequest, with: parameters)
             break
         }
-        urlRequest.setValue("token eb43d9c4bb999ad3aa3b3127c6615c241cd41ff9", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("token 6d846b7883c2b3ce96412bf2c77991989074aaee", forHTTPHeaderField: "Authorization")
         
         return urlRequest
     }

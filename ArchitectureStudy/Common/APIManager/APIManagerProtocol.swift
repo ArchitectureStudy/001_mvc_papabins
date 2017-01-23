@@ -18,15 +18,11 @@ enum BackendError: Error {
     case objectSerialization(reason: String)
 }
 
-protocol ResponseObjectSerializable {
-    init?(response: HTTPURLResponse, representation: Any)
-}
-
-protocol APIManager {
+protocol APIManagerProtocol {
     func requestApi(_ endpoint: Endpoint) -> DataRequest
 }
 
-extension APIManager {
+extension APIManagerProtocol {
     func requestApi(_ endpoint: Endpoint) -> DataRequest {
         return requestApi(endpoint)
     }
@@ -38,14 +34,23 @@ func += <K, V> (left: inout [K : V], right: [K : V]) {
     }
 }
 
-extension SessionManager: APIManager {
+extension SessionManager: APIManagerProtocol {
     
     func requestApi(_ endpoint: Endpoint) -> DataRequest {
         return request(endpoint)
     }
 }
 
+protocol ResponseObjectSerializable {
+    init?(response: HTTPURLResponse, representation: Any)
+}
+
+protocol APIRequestProtocol {
+    func responseApi(_ completionHandler: (DataResponse<Any>) -> Void) -> Self
+}
+
 extension DataRequest {
+
     func responseApi<T: ResponseObjectSerializable>(
         queue: DispatchQueue? = nil,
         completionHandler: @escaping (DataResponse<T>) -> Void)
@@ -72,3 +77,25 @@ extension DataRequest {
     }
 }
 
+enum ApiResult<Value> {
+    case success(value: Value)
+    case failure(error: NSError)
+    
+    init(_ f: () throws -> Value) {
+        do {
+            let value = try f()
+            self = .success(value: value)
+        } catch let error as NSError {
+            self = .failure(error: error)
+        }
+    }
+    
+    func unwrap() throws -> Value {
+        switch self {
+        case .success(let value):
+            return value
+        case .failure(let error):
+            throw error
+        }
+    }
+}
