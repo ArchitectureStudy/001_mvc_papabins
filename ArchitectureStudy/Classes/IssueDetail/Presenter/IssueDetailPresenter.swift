@@ -22,7 +22,14 @@ class IssueDetailPresenter {
     required init(delegate: IssueDetailPresenterDelegate, number: String) {
         
         self.delegate = delegate
-        self.dataSource = IssueDetail(user: "ArchitectureStudy", repo: "study", number: number)
+        if let userName = GithubInfo.sharedInstance.userName,
+            let repository = GithubInfo.sharedInstance.repository {
+            self.dataSource = IssueDetail(user: userName, repo: repository, number: number)
+        }
+        else {
+            self.dataSource = IssueDetail(user: "", repo: "", number: number)
+            assertionFailure()
+        }
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updatedIssue),
                                                name: .newIssue,

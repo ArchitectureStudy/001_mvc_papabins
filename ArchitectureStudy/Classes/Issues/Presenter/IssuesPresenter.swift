@@ -21,7 +21,14 @@ class IssuesPresenter {
     required init(delegate: IssuesPresensterProtocol) {
         
         self.delegate = delegate
-        self.dataSource = Issues(user: "ArchitectureStudy", repo: "study")
+        if let userName = GithubInfo.sharedInstance.userName,
+            let repository = GithubInfo.sharedInstance.repository {
+            self.dataSource = Issues(user: userName, repo: repository)
+        }
+        else {
+            self.dataSource = Issues(user: "", repo: "")
+            assertionFailure()
+        }
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updatedIssues),
                                                name: .newIssues,

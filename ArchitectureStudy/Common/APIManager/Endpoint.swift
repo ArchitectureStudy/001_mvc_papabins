@@ -65,7 +65,9 @@ enum Endpoint: URLRequestConvertible {
             break
         }
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.setValue("token c5e4ec18f50bc3ff8dfe5fa61959969e92ff277f", forHTTPHeaderField: "Authorization")
+        if let accessToken = GithubInfo.sharedInstance.accessToken {
+            urlRequest.setValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
+        }
         
         return urlRequest
     }
