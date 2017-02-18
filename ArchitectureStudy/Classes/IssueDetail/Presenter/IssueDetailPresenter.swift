@@ -22,7 +22,14 @@ class IssueDetailPresenter {
     required init(delegate: IssueDetailPresenterDelegate, number: String) {
         
         self.delegate = delegate
-        self.dataSource = IssueDetail(user: "ArchitectureStudy", repo: "study", number: number)
+        if let userName = GithubInfo.sharedInstance.userName,
+            let repository = GithubInfo.sharedInstance.repository {
+            self.dataSource = IssueDetail(user: userName, repo: repository, number: number)
+        }
+        else {
+            self.dataSource = IssueDetail(user: "", repo: "", number: number)
+            assertionFailure()
+        }
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updatedIssue),
                                                name: .newIssue,
@@ -64,6 +71,10 @@ class IssueDetailPresenter {
     @objc func createdComment(_ notification: NSNotification) {
         if let result = notification.userInfo?["isSuccess"] as? String {
             let isSuccess: Bool = result == "OK" ? true : false
+            if isSuccess {
+                // 코멘트 추가 완료되면 코멘트를 다시 로드.
+                self.loadComments()
+            }
             self.delegate?.didCreatedComment(isSuccess: isSuccess)
         }
         else {

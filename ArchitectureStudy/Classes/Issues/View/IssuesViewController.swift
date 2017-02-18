@@ -17,6 +17,17 @@ class IssuesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self,
+                                 action: #selector(refreshOptions(sender:)),
+                                 for: .valueChanged)
+        if #available(iOS 10.0, *) {
+            self.tableview.refreshControl = refreshControl
+        }
+        else {
+            self.tableview.addSubview(refreshControl)
+        }
         self.presenter = IssuesPresenter(delegate: self)
         
         self.presenter.loadIssues()
@@ -41,7 +52,13 @@ class IssuesViewController: UIViewController {
             let issue = presenter.dataSource.issues[indexPath.row]
             viewController.issueNumber = "\(issue.number)"
         }
-        
+    }
+    
+    @objc private func refreshOptions(sender: UIRefreshControl) {
+        // Perform actions to refresh the content
+        self.tableview.reloadData()
+        // and then dismiss the control
+        sender.endRefreshing()
     }
 }
 
