@@ -33,6 +33,10 @@ class IssuesPresenter {
                                                selector: #selector(updatedIssues),
                                                name: .newIssues,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(createdComment(_ :)),
+                                               name: .createComment,
+                                               object: nil)
     }
     
     deinit {
@@ -45,6 +49,16 @@ class IssuesPresenter {
     
     @objc func updatedIssues() {
         self.delegate?.didFinishLoadIssues()
+    }
+    
+    @objc func createdComment(_ notification: NSNotification) {
+        if let result = notification.userInfo?["isSuccess"] as? String {
+            let isSuccess: Bool = result == "OK" ? true : false
+            if isSuccess {
+                // 코멘트 추가 완료되면 이슈리스트 다시 로드.
+                self.loadIssues()
+            }
+        }
     }
     
 }

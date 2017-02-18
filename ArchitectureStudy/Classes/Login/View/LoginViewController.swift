@@ -29,7 +29,7 @@ class LoginViewController: UIViewController {
     
     private func initialize() {
         self.presenter = LoginPresenter()
-        self.accessTokenTextField.text = "c1a5c7a4c2e479d0854d0b159ed5ece107457bc5"
+        self.accessTokenTextField.text = "67bcae216900713749355ca04bc4bc6bbce8b4f9"
         
         self.presenter.setUserName(userName: userNameTextField.text)
         self.presenter.setRepository(repository: repositoryTextField.text)

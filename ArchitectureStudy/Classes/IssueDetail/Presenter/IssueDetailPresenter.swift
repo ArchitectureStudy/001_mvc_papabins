@@ -71,6 +71,10 @@ class IssueDetailPresenter {
     @objc func createdComment(_ notification: NSNotification) {
         if let result = notification.userInfo?["isSuccess"] as? String {
             let isSuccess: Bool = result == "OK" ? true : false
+            if isSuccess {
+                // 코멘트 추가 완료되면 코멘트를 다시 로드.
+                self.loadComments()
+            }
             self.delegate?.didCreatedComment(isSuccess: isSuccess)
         }
         else {
