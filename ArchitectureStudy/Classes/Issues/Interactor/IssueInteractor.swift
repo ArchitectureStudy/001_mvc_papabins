@@ -1,8 +1,8 @@
 //
-//  Issues.swift
+//  IssueInteractor.swift
 //  ArchitectureStudy
 //
-//  Created by Bongwook Bin on 2017. 1. 9..
+//  Created by Bongwook Bin on 2017. 2. 28..
 //  Copyright © 2017년 papabins. All rights reserved.
 //
 
@@ -11,8 +11,9 @@ import ObjectMapper
 import AlamofireObjectMapper
 import Alamofire
 
-class Issues {
+class IssueInteractor: IssuesUseCase {
     
+    weak var output: IssuesInteractorOutput!
     var user: String
     var repo: String
     var issues = [Issue]()
@@ -22,17 +23,18 @@ class Issues {
         self.repo = repo
     }
     
-    func loadIssues() {
+    func fetchIssues() {
         let endpoint: Endpoint = .getIssues(user: user, repo: repo)
         Alamofire.request(endpoint).responseJSON { response in
             switch response.result {
             case .success:
                 if let json = response.result.value as? [[String: Any]] {
                     self.issues = Mapper<Issue>().mapArray(JSONArray: json)!
-                    NotificationCenter.default.post(name: .newIssues, object: nil)
+                    self.output.issuesFetched(self.issues)
                 }
             case .failure(let error):
                 print("----- error: \(error)")
+                self.output.issuesFetchFailed()
             }
         }
     }

@@ -16,17 +16,17 @@ protocol IssuesPresensterProtocol {
 class IssuesPresenter {
     
     private var delegate: IssuesPresensterProtocol?
-    var dataSource: Issues
+    var interactor: IssueInteractor
     
     required init(delegate: IssuesPresensterProtocol) {
         
         self.delegate = delegate
         if let userName = GithubInfo.sharedInstance.userName,
             let repository = GithubInfo.sharedInstance.repository {
-            self.dataSource = Issues(user: userName, repo: repository)
+            self.interactor = IssueInteractor(user: userName, repo: repository)
         }
         else {
-            self.dataSource = Issues(user: "", repo: "")
+            self.interactor = IssueInteractor(user: "", repo: "")
             assertionFailure()
         }
         NotificationCenter.default.addObserver(self,
@@ -44,7 +44,7 @@ class IssuesPresenter {
     }
     
     public func loadIssues() {
-        dataSource.loadIssues()
+        interactor.fetchIssues()
     }
     
     @objc func updatedIssues() {
@@ -61,4 +61,15 @@ class IssuesPresenter {
         }
     }
     
+}
+
+extension IssuesPresenter: IssuesInteractorOutput {
+    
+    func issuesFetched(_ issues: [Issue]) {
+        
+    }
+    
+    internal func issuesFetchFailed() {
+        
+    }
 }

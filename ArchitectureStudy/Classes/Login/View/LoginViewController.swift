@@ -14,7 +14,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var repositoryTextField: UITextField!
     @IBOutlet weak var accessTokenTextField: UITextField!
     
-    var presenter: LoginPresenter!
+    var presenter: LoginPresentation!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +29,7 @@ class LoginViewController: UIViewController {
     
     private func initialize() {
         self.presenter = LoginPresenter()
-        self.accessTokenTextField.text = "67bcae216900713749355ca04bc4bc6bbce8b4f9"
+        self.accessTokenTextField.text = "172928a1e06488916c1e9ef34755e4070ae15c9f"
         
         self.presenter.setUserName(userName: userNameTextField.text)
         self.presenter.setRepository(repository: repositoryTextField.text)

@@ -8,13 +8,18 @@
 
 import Foundation
 
-class LoginPresenter {
-    
+class LoginPresenter: LoginPresentation {
+    weak var view: LoginView?
+    var router: LoginWireframe!
     var model: GithubInfo
     
     required init() {
         
         self.model = GithubInfo.sharedInstance
+    }
+    
+    func didClickSortButton() {
+        router.presentIssues()
     }
     
     public func setUserName(userName: String?) {
